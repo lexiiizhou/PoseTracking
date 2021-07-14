@@ -20,6 +20,14 @@ def list_files(dir, type):
     return r
 
 
+def sort_files(folder):
+    """
+    Group video files, hfd5 files, and csv files into separate folders within the current directory
+    :param folder:
+    :return:
+    """
+
+
 def write_log(name, log_out_folder):
     # create logger instance
     logger = logging.getlogger(name)
