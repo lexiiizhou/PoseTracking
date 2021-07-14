@@ -81,5 +81,13 @@ def sample_from_vid(vid_file, out_folder, sample_duration, n):
         startmin, startsec, starthr = minute, seconds, hour
 
 
+    def sample_using_timestamps(vid_file, out_folder, timestamps, sample_duration):
+        """
+        sample from video based on provided timestamps
+        :param vid_file: file path to video
+        :param out_folder: where to save samples
+        :param timestamps: a list of timestamps
+        :param sample_duration: duration of each sample centered around the timestamp
+        :return:
+        """
 #stitching videos?
-#sample from videos based on given timestampes
