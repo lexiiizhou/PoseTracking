@@ -7,10 +7,12 @@ import h5py
 from scipy.interpolate import interp1d
 
 
-'''Input
+'''
+    Input
     1. File paths of hdf5 exported from pose tracking software
     2. Frame rate of the videos analyzed
-   Output: directly save kinematics csv files to the as file as the given hdf5'''
+   Output: directly save kinematics csv files to the as file as the given hdf5
+'''
 
 def h5_to_csv(file_dir, frame_rate):
     save_to = os.path.abspath(os.path.join(file_dir, os.pardir))
