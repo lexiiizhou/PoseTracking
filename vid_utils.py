@@ -2,6 +2,7 @@ import imageio
 import os
 import cv2
 
+
 def path_prefix_free(path):
     symbol = os.path.sep
     if path[-len(symbol):] == symbol:
@@ -81,13 +82,35 @@ def sample_from_vid(vid_file, out_folder, sample_duration, n):
         startmin, startsec, starthr = minute, seconds, hour
 
 
-    def sample_using_timestamps(vid_file, out_folder, timestamps, sample_duration):
-        """
-        sample from video based on provided timestamps
-        :param vid_file: file path to video
-        :param out_folder: where to save samples
-        :param timestamps: a list of timestamps
-        :param sample_duration: duration of each sample centered around the timestamp
-        :return:
-        """
-#stitching videos?
+def sample_using_timestamps(vid_file, out_folder, timestamps, sample_duration):
+    """
+    sample from video based on provided timestamps
+    :param vid_file: file path to video
+    :param out_folder: where to save samples
+    :param timestamps: a list of timestamps
+    :param sample_duration: duration of each sample centered around the timestamp
+    :return:
+    """
+
+
+def list_files(dir, type):
+    """
+    List all files of a certain type in the given dir
+    :param dir: directory
+    :param TYPE: str
+    :return:
+    """
+    r = []
+    for root, dirs, files in os.walk(dir):
+        for name in files:
+            if name.endswith(type):
+                r.append(os.path.join(root, name))
+    return r
+
+
+def sort_files(folder):
+    """
+    Group video files, hfd5 files, and csv files into separate folders within the current directory
+    :param folder:
+    :return:
+    """
