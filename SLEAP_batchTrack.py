@@ -3,11 +3,12 @@ import logging
 import random
 import h5_to_csv as hc
 import vid_utils as vut
+import subprocess
 
 
 def write_log(name, log_out_folder):
     # create logger instance
-    logger = logging.getLogger()
+    logger = logging.getLogger(name)
     logger.setLevel(logging.ERROR)
 
     # Assign a filehandler to logger instance
@@ -24,7 +25,7 @@ def write_log(name, log_out_folder):
     return logger
 
 
-def sleapTrack(input_folder, model):
+def sleapTrack(input_folder, model, logger):
     """
     Predict on all videos in input folder using the given model and output
     prediction as hdf5 files to input_folder
@@ -33,22 +34,21 @@ def sleapTrack(input_folder, model):
     :param model: path to the model being used
     :return: sample framerate so that h5_to_csv can use it
     """
-    logger_location = str(input_folder) + '/logger'
-    logger = write_log(str(input_folder).split('/')[-1], logger_location)
 
-    avi = list_files(input_folder, '.avi')
+    avi = vut.list_files(input_folder, '.avi')
     sample_framerate, duration, frame_count = vut.get_duration(random.choice(avi))
 
     for vid in avi:
         vid_name = str(vid).split('/')[-1]
         vid_parent_dir = os.path.abspath(os.path.join(vid, os.pardir))
         try:
-            os.system('sleap-track ' + str(vid) + ' -m ' + str(model))
+            subprocess.run('sleap-track ' + str(vid) + ' -m ' + str(model))
         except:
             logger.error("something went wrong with" + vid_name + 'tracking')
             continue
         try:
-            os.system('sleap-convert ' + str(vid) + '.predictions.slp ' + ' --format h5 ' + ' -o ' + vid_parent_dir)
+            subprocess.run('sleap-convert ' + str(vid) + '.predictions.slp ' + ' --format h5 ' + ' -o ' +
+                        vid_parent_dir)
         except:
             logger.error("something went wrong with" + vid_name + 'file conversion')
             continue
@@ -66,9 +66,10 @@ def vid_to_csv(input_folder, model):
     os.mkdir(str(input_folder) + '/logger')
     logger = write_log(str(input_folder).split('/')[-1], logger_location)
 
-    os.system('conda activate sleap')
+    cmd = '. $CONDA_PREFIX/etc/profile.d/conda.sh && conda activate sleap_env'
+    subprocess.run(cmd, shell=True)
     framerate = sleapTrack(input_folder,  model, logger)
-    h5 = list_files(input_folder, '.analysis.h5')
+    h5 = vut.list_files(input_folder, '.analysis.h5')
 
     for i in h5:
         try:
@@ -76,10 +77,5 @@ def vid_to_csv(input_folder, model):
         except:
             logger.error('something went wrong with' + i + "analysis")
             continue
-
-
-sleapTrack('/Volumes/LexiZ/Research/SLEAP/PoseEstimation/TestVid',
-           '/Volumes/LexiZ/Research/SLEAP/PoseEstimation/dreaddRotation')
-
 
 
