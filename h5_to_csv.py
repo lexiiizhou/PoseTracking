@@ -4,6 +4,7 @@ import math
 from scipy.signal import savgol_filter
 from scipy.ndimage import gaussian_filter1d
 import h5py
+import os
 from scipy.interpolate import interp1d
 
 
@@ -14,8 +15,10 @@ from scipy.interpolate import interp1d
    Output: directly save kinematics csv files to the as file as the given hdf5
 '''
 
+
 def h5_to_csv(file_dir, frame_rate):
-    save_to = os.path.abspath(os.path.join(file_dir, os.pardir))
+    session_name = file_dir.split('/')[-1].split('.')[0]
+    save_to = os.path.dirname(os.path.realpath(file_dir)) + "/" + session_name
 
     with h5py.File(file_dir, 'r') as f:
         dset_names = list(f.keys())
@@ -23,7 +26,7 @@ def h5_to_csv(file_dir, frame_rate):
         tracks_matrix = f['tracks'][:].transpose()
         nodes = [n.decode() for n in f["node_names"][:]]
 
-    def fill_missing(Y, kind="cubic"):
+    def fill_missing(Y, kind="linear"):
         """Fills missing values independently along each dimension after the first"""
 
         initial_shape = Y.shape
@@ -38,18 +41,19 @@ def h5_to_csv(file_dir, frame_rate):
 
             # Fill missing
             xq = np.flatnonzero(np.isnan(y))
-            Y[xq, i] = f(xq)
+            y[xq] = f(xq)
 
             # Fill leading or trailing NaNs with the nearest non-NaN values
-            mask = np.isnan(Y)
-            Y[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), Y[~mask])
+            mask = np.isnan(y)
+            y[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), y[~mask])
+
+            # Save slice
+            Y[:, i] = y
         # Restore to initial shape
         Y = Y.reshape(initial_shape)
         return Y
 
-
     tracks_matrix = fill_missing(tracks_matrix)
-
 
     def filtered_coordinate(node_index, x_or_y, win=15, poly=3):
         """generate coordinate and smooth data with Savitzky-Golay Filter"""
@@ -67,7 +71,6 @@ def h5_to_csv(file_dir, frame_rate):
                 coordinates = np.append(coordinates, tracks_matrix[i - 1, node_index, 1, 0])
                 i += 1
         return savgol_filter(coordinates, win, poly)
-
 
     ihead = 0
     itorso = 1
@@ -95,7 +98,6 @@ def h5_to_csv(file_dir, frame_rate):
                 yd = tailhead_y_coordinates[framenum + 1] - tailhead_y_coordinates[framenum]
             return np.sqrt(xd ** 2 + yd ** 2)
 
-
     head_displacement = np.array([])
     i = 0
     for i in range(tracks_matrix.shape[0]):
@@ -114,7 +116,6 @@ def h5_to_csv(file_dir, frame_rate):
         tailhead_displacement = np.append(tailhead_displacement, get_displacement('Tailhead', i))
         i += 1
 
-
     # velocity in coordinates/second
     def get_velocity(node_displacement, sigma=3):
         raw_velocity = node_displacement / (1 / frame_rate)
@@ -122,11 +123,9 @@ def h5_to_csv(file_dir, frame_rate):
         filtered = gaussian_filter1d(raw_velocity, sigma)
         return filtered
 
-
     head_velocity = get_velocity(head_displacement)
     torso_velocity = get_velocity(torso_displacement)
     tailhead_velocity = get_velocity(tailhead_displacement)
-
 
     # acceleration in coordinate/s^2
     def get_acceleration(node_velocity):
@@ -134,11 +133,9 @@ def h5_to_csv(file_dir, frame_rate):
         nextframe = np.append(np.delete(node_velocity, 0), 0)
         return (nextframe - node_velocity) / (1 / frame_rate)
 
-
     head_acceleration = get_acceleration(head_velocity)
     torso_acceleration = get_acceleration(torso_velocity)
     tailhead_acceleration = get_acceleration(tailhead_velocity)
-
 
     # calculate rotation and angular velocity
     def get_coordinates(framenum, node):
@@ -148,7 +145,6 @@ def h5_to_csv(file_dir, frame_rate):
             return np.array([torso_x_coordinates[framenum - 1], torso_y_coordinates[framenum - 1]])
         if node == 'Tailhead':
             return np.array([tailhead_x_coordinates[framenum - 1], tailhead_y_coordinates[framenum - 1]])
-
 
     def rotational_angle(framenum):
         """convert coordinates to egocentric coordinates"""
@@ -167,7 +163,6 @@ def h5_to_csv(file_dir, frame_rate):
             x2y2 = math.degrees(math.atan2(y2, x2))
         return x2y2 - x1y1
 
-
     # iterate through the dataset to extract rotation angle and angular velocity
 
     # rotation angle
@@ -181,7 +176,6 @@ def h5_to_csv(file_dir, frame_rate):
     # outliers come from turning at positive x-axis (e.g before:350degrees, after:5degrees, 5-350=-345)
 
     rotation_angle = org_rotation_angle.copy()
-
 
     def fix_outliers(Y, kind="cubic"):
         """Fills missing values independently along each dimension after the first"""
@@ -205,7 +199,6 @@ def h5_to_csv(file_dir, frame_rate):
         # Restore to initial shape
         Y = Y.reshape(initial_shape)
         return Y
-
 
     filtered_rotation_angle = fix_outliers(rotation_angle)
     final_rotation_angle = gaussian_filter1d(filtered_rotation_angle, 3)

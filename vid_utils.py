@@ -19,7 +19,7 @@ def get_duration(filename):
     """
     video = cv2.VideoCapture(filename)
 
-    fps = video.get(cv2.CAP_PROP_FPS)
+    fps = int(video.get(cv2.CAP_PROP_FPS))
     frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
     duration = frame_count / fps
 

@@ -40,19 +40,19 @@ def sleaptrack(input_folder, model, logger):
 
     for vid in avi:
         vid_name = str(vid).split('/')[-1]
-        vid_parent_dir = os.path.abspath(os.path.join(vid, os.pardir))
+        if not os.path.isfile(str(vid) + '.predictions.slp'):
+            try:
+                print('predicting on ' + str(vid))
+                subprocess.run('sleap-track ' + str(vid) + ' -m ' + str(model), shell=True)
+                print('Finished predicting on ' + str(vid))
+            except Exception as e:
+                print('ERROR: ' + vid_name + ' see log file for detail')
+                logger.error("something went wrong with" + vid_name + 'tracking: ' + str(e))
+                continue
         try:
-            print('predicting on ' + str(vid))
-            subprocess.run('sleap-track ' + str(vid) + ' -m ' + str(model), shell=True)
-            print('Finished predicting on ' + str(vid))
-        except Exception as e:
-            print('ERROR: ' + vid_name + 'see log file for detail')
-            logger.error("something went wrong with" + vid_name + 'tracking: ' + str(e))
-            continue
-        try:
-            print('converting predictions to hdf5 for ' + str(vid), shell=True)
-            subprocess.run('sleap-convert ' + str(vid) + '.predictions.slp ' + ' --format h5 ' + ' -o ' +
-                        str(vid_parent_dir))
+            print('converting predictions to hdf5 for ' + str(vid))
+            subprocess.run('sleap-convert ' + str(vid) + '.predictions.slp ' + ' --format analysis' + ' -o ' +
+                           str(vid) + '.predictions.analysis.h5', shell=True)
             print('Finished converting predictions to hdf5 for ' + str(vid))
         except Exception as e:
             print('ERROR: ' + vid_name + 'see log file for detail')
@@ -64,7 +64,6 @@ def sleaptrack(input_folder, model, logger):
 def vid_to_csv(input_folder, model):
     """
     :param input_folder: Input folder that contains all video files
-    :param logger: Where to keep exception/error logs
     :param model: trained model file
     :return: train, export hdf5, and perform kinematic analysis
     """
@@ -80,10 +79,12 @@ def vid_to_csv(input_folder, model):
 
     for i in h5:
         try:
+            print("Generating Kinematics for " + i + '...')
             hc.h5_to_csv(i, framerate)
+            print("Finished generating Kinematics for " + i + "!")
         except Exception as e:
             print('ERROR: ' + i + 'see log file for detail')
-            logger.error('something went wrong with' + i + "analysis: " + str(e))
+            logger.error('something went wrong with ' + i + "analysis: " + str(e))
             continue
 
 
