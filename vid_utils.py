@@ -1,5 +1,6 @@
 import imageio
 import os
+import subprocess
 import cv2
 
 
@@ -61,7 +62,7 @@ def sample_from_vid(vid_file, out_folder, sample_duration, n):
 
     def crop(start, end, input, output):
         str = "ffmpeg" + " -i " + input + " -ss  " + start + " -to " + end + " -c copy " + output
-        os.system(str)
+        subprocess.run(str, shell=True)
 
     startmin, startsec, starthr = 0, 0, 0
     start = str(format(starthr, '02d')) + ':' + str(format(startmin, '02d')) + ':' + str(format(startsec, '02d'))
@@ -73,13 +74,13 @@ def sample_from_vid(vid_file, out_folder, sample_duration, n):
     while i < n:
         i += 1
         minute = format(int(sample_duration / 60) + int(startmin), '02d')
-        seconds = format(int(sample_duration % 60) + int(startsec), '02d')
+        second = format(int(sample_duration % 60) + int(startsec), '02d')
         hour = format(int(sample_duration / 360) + int(starthr), '02d')
-        end = str(hour) + ':' + str(minute) + ':' + str(seconds)
+        end = str(hour) + ':' + str(minute) + ':' + str(second)
         crop(start, end, vid_file, out_folder + "/" + "sample" + str(i) + '_' + vid_name)
         print('saved:' + out_folder + "/" + "sample" + str(i) + '_' + vid_name)
         print(end)
-        startmin, startsec, starthr = minute, seconds, hour
+        start = second + ':' + minute + ':' + hour
 
 
 def sample_using_timestamps(vid_file, out_folder, timestamps, sample_duration):
