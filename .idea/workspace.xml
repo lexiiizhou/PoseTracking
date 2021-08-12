@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e13da1e4-8f2a-4f59-9689-09fd21aebb3b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SLEAP_batchTrack.py" beforeDir="false" afterPath="$PROJECT_DIR$/SLEAP_batchTrack.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stitcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/Stitcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/h5_to_csv.py" beforeDir="false" afterPath="$PROJECT_DIR$/h5_to_csv.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vid_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vid_utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +88,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$USER_HOME$/anaconda3/envs/sleap_env" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
   </component>
   <component name="RunManager" selected="Python.tests">
     <configuration name="tests" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -219,7 +213,8 @@
       <workItem from="1628542960368" duration="2874000" />
       <workItem from="1628546182076" duration="595000" />
       <workItem from="1628546802909" duration="1090000" />
-      <workItem from="1628634434509" duration="18125000" />
+      <workItem from="1628634434509" duration="18544000" />
+      <workItem from="1628798495403" duration="817000" />
     </task>
     <servers />
   </component>
@@ -304,15 +299,33 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
           </value>
         </entry>
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PoseTracking$vid_utils.coverage" NAME="vid_utils Coverage Results" MODIFIED="1628545014778" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
