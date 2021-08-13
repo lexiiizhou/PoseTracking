@@ -26,13 +26,14 @@ def get_duration(filename):
     return fps, duration, frame_count
 
 
-def chunk_video_sample_from_file(filename, out_folder, fps, duration):
+def chunk_video_sample_from_file(filename, out_folder, fps, start, end):
     """
     Output a clip of a given length of video filename and output to out_folder
+    :param end: frame index
+    :param start: frame index
     :param filename:
     :param out_folder:
     :param fps: frames/sec
-    :param duration: in seconds
     :return:
     """
     assert path_prefix_free(filename).count('.') == 1, 'has to contain only one .'
@@ -42,13 +43,17 @@ def chunk_video_sample_from_file(filename, out_folder, fps, duration):
                            mode='I', fps=fps) # figure out what mode means
     vid = imageio.get_reader(filename)
     for ith, img in enumerate(vid):
-        if ith < duration * fps:
+        if start < ith < end:
             print('writing', img.shape, ith)
             w.append_data(img)
-        if ith >= duration * fps:
+        if ith >= end:
             print('all done')
             break
     w.close()
+
+
+# np.sum(img) / np.prod(img.shape)
+# output: timestamps + new video with bad frames deleted
 
 
 def sample_from_vid(vid_file, out_folder, sample_duration, n):
@@ -61,7 +66,7 @@ def sample_from_vid(vid_file, out_folder, sample_duration, n):
     """
 
     def crop(start, end, input, output):
-        str = "ffmpeg" + " -i " + input + " -ss  " + start + " -to " + end + " -c copy " + output
+        str = "ffmpeg -i " + input + " -ss " + start + " -to " + end + " -c copy " + output
         subprocess.run(str, shell=True)
 
     startmin, startsec, starthr = 0, 0, 0
@@ -80,7 +85,8 @@ def sample_from_vid(vid_file, out_folder, sample_duration, n):
         crop(start, end, vid_file, out_folder + "/" + "sample" + str(i) + '_' + vid_name)
         print('saved:' + out_folder + "/" + "sample" + str(i) + '_' + vid_name)
         print(end)
-        start = second + ':' + minute + ':' + hour
+        startsec, startmin, starthr = second, minute, hour
+        start = startsec + ':' + startmin + ':' + starthr
 
 
 def sample_using_timestamps(vid_file, out_folder, timestamps, sample_duration):
@@ -109,9 +115,3 @@ def list_files(dir, type):
     return r
 
 
-def sort_files(folder):
-    """
-    Group video files, hfd5 files, and csv files into separate folders within the current directory
-    :param folder:
-    :return:
-    """

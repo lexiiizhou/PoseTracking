@@ -25,6 +25,14 @@ def write_log(name, log_out_folder):
     return logger
 
 
+def sort_files(dir):
+    """
+    Group video files, hfd5 files, and csv files into separate folders within the current directory
+    :param dir: dir to be sorted
+    :return:
+    """
+
+
 def sleaptrack(input_folder, model, logger):
     """
     Predict on all videos in input folder using the given model and output
@@ -86,5 +94,3 @@ def vid_to_csv(input_folder, model):
             print('ERROR: ' + i + 'see log file for detail')
             logger.error('something went wrong with ' + i + "analysis: " + str(e))
             continue
-
-
