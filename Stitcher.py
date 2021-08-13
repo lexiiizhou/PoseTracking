@@ -105,3 +105,4 @@ class MultiVideoStitch:
         matcher = cv2.DescriptorMatcher_create("BruteForce")
         raw_matches = matcher.knnMatch()
 
+
