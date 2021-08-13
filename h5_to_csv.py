@@ -7,7 +7,6 @@ import h5py
 import os
 from scipy.interpolate import interp1d
 
-
 '''
     Input
     1. File paths of hdf5 exported from pose tracking software
