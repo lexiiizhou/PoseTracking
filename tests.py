@@ -12,5 +12,5 @@ import subprocess
 # vut.sample_from_vid('/media/data/Sleap/RRvids/testTmaze/testTmaze1.avi',
 #                     '/media/data/Sleap/RRvids/testTmaze', 180, 4)
 
-vut.chunk_video_sample_from_file('/media/data/Sleap/RRvids/testTmaze/testTmaze1.avi',
-                                 '/media/data/Sleap/RRvids/testTmaze', 30, 2039, 4549)
+vut.chunk_video_sample_from_file('/media/data/Sleap/RRvids/testTmaze/testTmaze2.avi',
+                                 '/media/data/Sleap/RRvids/testTmaze', 30, 1017, 16509)

@@ -26,6 +26,13 @@ def get_duration(filename):
     return fps, duration, frame_count
 
 
+def time_to_frame(time):
+    """
+    :param time: time in the format of hour:minute:second
+    :return: approximate frame index
+    """
+
+
 def chunk_video_sample_from_file(filename, out_folder, fps, start, end):
     """
     Output a clip of a given length of video filename and output to out_folder
@@ -52,6 +59,14 @@ def chunk_video_sample_from_file(filename, out_folder, fps, start, end):
     w.close()
 
 
+def clean_video(vid, chopVid=False):
+    """
+    Detect frames that only contain the animal (filtering out parts of the video where the animal
+    is absent or when there's a disruption during task).
+    :param chopVid: Output either sessions or one video
+    :param vid: file path to the video
+    :return: timestamp file and videos
+    """
 # np.sum(img) / np.prod(img.shape)
 # output: timestamps + new video with bad frames deleted
 
@@ -104,7 +119,7 @@ def list_files(dir, type):
     """
     List all files of a certain type in the given dir
     :param dir: directory
-    :param TYPE: str
+    :param type: str
     :return:
     """
     r = []
