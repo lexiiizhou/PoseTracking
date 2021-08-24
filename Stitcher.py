@@ -63,6 +63,11 @@ class MultiVideoStitch:
 
     @staticmethod
     def extractFrame(vid):
+        """
+        Extract key points and features of a given image
+        :param vid: filepath to avi video
+        :return: a list of frames
+        """
         frame_num = vut.get_duration(vid)
         vid = cv2.VideoCapture(vid)
         count = 0
@@ -152,5 +157,6 @@ class MultiVideoStitch:
             return None
 
     def stitch(self):
+        return;
 
 

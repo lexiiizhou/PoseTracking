@@ -4,7 +4,6 @@
     <list default="true" id="e13da1e4-8f2a-4f59-9689-09fd21aebb3b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Stitcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/Stitcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vid_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vid_utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -229,7 +228,7 @@
       <workItem from="1629593273804" duration="42000" />
       <workItem from="1629756407396" duration="47000" />
       <workItem from="1629757047680" duration="621000" />
-      <workItem from="1629838588275" duration="3308000" />
+      <workItem from="1629838588275" duration="5653000" />
     </task>
     <servers />
   </component>

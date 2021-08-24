@@ -138,7 +138,7 @@ def sort_files(dir):
 
     for file in allFiles:
         if file.__contains__('.'):
-            sessionname = get_name(file)
+            sessionname = get_name(file).split('_2')[0]
             file_dir = dir + '/' + sessionname
             if not os.path.isdir(file_dir):
                 os.mkdir(file_dir)
