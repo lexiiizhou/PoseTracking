@@ -4,13 +4,12 @@ import os
 import h5_to_csv
 import vid_utils as vut
 import subprocess
+#
+# sl.vid_to_csv('/media/data/Sleap/probswitchVids/batchTrainTest',
+#               '/media/data/Sleap/models/210821_155119.single_instance.n=55')
 
-# sl.vid_to_csv('/media/data/Sleap/probswitchVids/testVids', '/media/data/Sleap/models/TA210112_221325.single_instance.76')
+vut.sort_files('/media/data/Sleap/probswitchVids/batchTrainTest')
 
-# print(vut.get_duration('/media/data/Sleap/RRvids/testTmaze/sample2_testTmaze1.avi'))
+# vut.sort_files('/media/data/Sleap/probswitchVids/testVids')
 
-# vut.sample_from_vid('/media/data/Sleap/RRvids/testTmaze/testTmaze1.avi',
-#                     '/media/data/Sleap/RRvids/testTmaze', 180, 4)
-
-vut.chunk_video_sample_from_file('/media/data/Sleap/RRvids/testTmaze/testTmaze2.avi',
-                                 '/media/data/Sleap/RRvids/testTmaze', 30, 1017, 16509)
+# print(os.path.isdir('/media/data/Sleap/probswitchVids/testVids/A2A-19B_LT_20200728_LH_ProbSwitch_p159'))

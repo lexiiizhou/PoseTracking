@@ -2,6 +2,7 @@ import imageio
 import os
 import subprocess
 import cv2
+import shutil
 
 
 def path_prefix_free(path):
@@ -24,13 +25,6 @@ def get_duration(filename):
     duration = frame_count / fps
 
     return fps, duration, frame_count
-
-
-def time_to_frame(time):
-    """
-    :param time: time in the format of hour:minute:second
-    :return: approximate frame index
-    """
 
 
 def chunk_video_sample_from_file(filename, out_folder, fps, start, end):
@@ -128,5 +122,26 @@ def list_files(dir, type):
             if name.endswith(type):
                 r.append(os.path.join(root, name))
     return r
+
+
+def sort_files(dir):
+    """
+    Sort files of the same session into the same folder
+    :param dir: directory
+    :return:
+    """
+    def get_name(file):
+        name = file.split('.')[0]
+        return name
+
+    allFiles = os.listdir(dir)
+
+    for file in allFiles:
+        if file.__contains__('.'):
+            sessionname = get_name(file)
+            file_dir = dir + '/' + sessionname
+            if not os.path.isdir(file_dir):
+                os.mkdir(file_dir)
+            shutil.move(dir + '/' + file, file_dir + '/' + file)
 
 

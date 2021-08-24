@@ -1,11 +1,11 @@
 import imutils
 import tqdm
 import os
+import imageio
 from moviepy.editor import ImageSequenceClip
 import numpy as np
-import imutils
 import cv2
-import vid_utils
+import vid_utils as vut
 
 '''
 General workflow
@@ -45,11 +45,14 @@ for i in 1:len(images)-1:
 # check that all 4 videos have the same number of frames
 # if not, use timestamp to ensure all videos are the same length
 
+'''
+'''
+
 
 class MultiVideoStitch:
 
-    def __init__(self, video_path, num_of_vid, vid_out_path, video_out_width= 800, method=None):
-        self.videos = video_path
+    def __init__(self, video_paths, num_of_vid, vid_out_path, video_out_width= 800, method=None):
+        self.videos = video_paths
         self.video_out_path = vid_out_path
         self.num_of_vid = num_of_vid
         self.video_out_width = video_out_width
@@ -57,6 +60,19 @@ class MultiVideoStitch:
 
         # Homography Matrix
         self.homo_mat = None
+
+    @staticmethod
+    def extractFrame(vid):
+        frame_num = vut.get_duration(vid)
+        vid = cv2.VideoCapture(vid)
+        count = 0
+        frames = []
+        # Checks whether frames were extracted
+        success = 1
+        while success and count <= frame_num:
+            success, image = vid.read()
+            count += 1
+        return frames
 
     def detectAndExtract(self, image):
         """
@@ -90,7 +106,7 @@ class MultiVideoStitch:
             matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=crossCheck)
         return matcher
 
-    def matchKeyPoints(self, featuresA, featuresB):
+    def matchKeyPointsBF(self, featuresA, featuresB):
         matcher = self.generateMatcher(crossCheck=True)
 
         # Match descriptors
@@ -102,7 +118,39 @@ class MultiVideoStitch:
         print("Raw matches (Brute force):", len(rawMatches))
         return rawMatches
 
-        matcher = cv2.DescriptorMatcher_create("BruteForce")
-        raw_matches = matcher.knnMatch()
+    def matchKeyPointsKNN(self, featuresA, featuresB, ratio):
+        matcher = self.generateMatcher(crossCheck=False)
+        # compute raw matches and initialize the list of actual matches
+        rawMatches = matcher.knnMatch(featuresA, featuresB, 2)
+        print('Raw Matches (knn):',len(rawMatches))
+        matches = []
+
+        # loop over raw matches
+        for m, n in rawMatches:
+            # ensure he distance is within a certain ratio of each other
+            if m.distance < n.distance * ratio:
+                matches.append(m)
+        return matches
+
+    @staticmethod
+    def getHomography(kpsA, kpsB, featuresA, featuresB, matches, reprojThresh):
+        # convert the keypoints to numpy arrays
+        kpsA = np.float32([kp.pt for kp in kpsA])
+        kpsB = np.float32([kp.pt for kp in kpsB])
+
+        if len(matches) > 4:
+
+            # construct the two sets of points
+            ptsA = np.float32([kpsA[m.queryIdx] for m in matches])
+            ptsB = np.float32([kpsB[m.trainIdx] for m in matches])
+
+            # Estimate the homography between the sets of points
+            (H, status) = cv2.findHomography(ptsA, ptsB, cv2.RANSAC, reprojThresh)
+
+            return matches, H, status
+        else:
+            return None
+
+    def stitch(self):
 
 
