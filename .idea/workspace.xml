@@ -4,7 +4,6 @@
     <list default="true" id="e13da1e4-8f2a-4f59-9689-09fd21aebb3b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Stitcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/Stitcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vid_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/vid_utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -228,7 +227,8 @@
       <workItem from="1629593273804" duration="42000" />
       <workItem from="1629756407396" duration="47000" />
       <workItem from="1629757047680" duration="621000" />
-      <workItem from="1629838588275" duration="5653000" />
+      <workItem from="1629838588275" duration="5952000" />
+      <workItem from="1629922891934" duration="1333000" />
     </task>
     <servers />
   </component>
@@ -356,7 +356,7 @@
     <SUITE FILE_PATH="coverage/PoseTracking$vid_utils.coverage" NAME="vid_utils Coverage Results" MODIFIED="1628545014778" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PoseTracking$Unittests_for_tests_TestBatchTrack_test_sleapTrack.coverage" NAME="Unittests for tests.TestBatchTrack.test_sleapTrack Coverage Results" MODIFIED="1628547281859" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PoseTracking$Unittests_for_tests_TestBatchTrack_test_batchTrack.coverage" NAME="Unittests for tests.TestBatchTrack.test_batchTrack Coverage Results" MODIFIED="1628380899416" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/PoseTracking$tests.coverage" NAME="tests Coverage Results" MODIFIED="1629756437563" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PoseTracking$tests.coverage" NAME="tests Coverage Results" MODIFIED="1629847327969" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/venv/tests.py" />

@@ -51,12 +51,14 @@ for i in 1:len(images)-1:
 
 class MultiVideoStitch:
 
-    def __init__(self, video_paths, num_of_vid, vid_out_path, video_out_width= 800, method=None):
+    def __init__(self, video_paths, num_of_vid, vid_out_path, featureMatching='bf', video_out_width=800,
+                 method=None):
         self.videos = video_paths
         self.video_out_path = vid_out_path
         self.num_of_vid = num_of_vid
         self.video_out_width = video_out_width
         self.method = method
+        self.featureMatching = featureMatching
 
         # Homography Matrix
         self.homo_mat = None
@@ -156,7 +158,50 @@ class MultiVideoStitch:
         else:
             return None
 
+    def twoImageStitch(self, images, ratio=None):
+        image_b, image_a = images
+
+        if self.homo_mat is None:
+            # Detect keypoints and extract
+            keypoints_a, features_a = self.detectAndExtract(image_a)
+            keypoints_b, features_b = self.detectAndExtract(image_b)
+
+            # Match features between the two images
+            if self.featureMatching == 'bf':
+                matches = self.matchKeyPointsBF(self, features_a, features_b)
+            elif self.featureMatching == 'knn':
+                assert ratio is not None
+                matches = self.matchKeyPointsKNN(self, features_a, features_b, ratio)
+
+            # If the match is None, then there aren't enough matches keypoints to create a panorama
+            if matches is None:
+                print('Not enough keypoints to create a panorama')
+                return None
+
+            # Save the homography matrix
+            self.homo_mat = matches[1]
+
+        # Apply a perspective transform to stitch the images together using the saved homography matrix
+        outputShape = (image_a.shape[1] + image_b.shape[1], image_a.shape[0])
+        result = cv2.warpPerspective(image_a, self.homo_mat, outputShape)
+        result[0:image_b.shape[0], 0:image_b.shape[1]] = image_b
+
+        # Return stitched image
+        return result
+
     def stitch(self):
-        return;
+        assert len(self.video_paths) == self.num_of_vid
+        if not os.path.isdir(self.video_out_path):
+            os.mkdir(self.video_out_path)
+
+        lists = [[] for _ in range(self.num_of_vid)]
+        for i in self.video_paths:
+            lists[i] = MultiVideoStitch.extractFrame(i)
+            # check if all videos have the same number of frames
+            if i >= 1:
+                assert len(lists[i]) == len(lists[i-1])
+        # iterate through all files in video_paths
+        # only generate homography for one set of 4 frames, then use the same homography to stitch
+        # remaining frames
 
 
