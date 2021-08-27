@@ -52,12 +52,13 @@ for i in 1:len(images)-1:
 class MultiVideoStitch:
 
     def __init__(self, video_paths, num_of_vid, vid_out_path, featureMatching='bf', video_out_width=800,
-                 method=None):
+                 method='sift', display=False):
         self.videos = video_paths
         self.video_out_path = vid_out_path
         self.num_of_vid = num_of_vid
         self.video_out_width = video_out_width
         self.method = method
+        self.display = display
         self.featureMatching = featureMatching
 
         # Homography Matrix
@@ -70,7 +71,7 @@ class MultiVideoStitch:
         :param vid: filepath to avi video
         :return: a list of frames
         """
-        frame_num = vut.get_duration(vid)
+        fps, duration, frame_num = vut.get_duration(vid)
         vid = cv2.VideoCapture(vid)
         count = 0
         frames = []
@@ -78,6 +79,7 @@ class MultiVideoStitch:
         success = 1
         while success and count <= frame_num:
             success, image = vid.read()
+            frames.append(image)
             count += 1
         return frames
 
@@ -92,13 +94,13 @@ class MultiVideoStitch:
         if self.method == 'sift':
             descriptor = cv2.xfeatures2d.SIFT_create()
         elif self.method == 'surf':
-            descriptor = cv2.xfeature2d.SURF_create()
+            descriptor = cv2.xfeatures2d.SURF_create()
         elif self.method == 'brisk':
-            descriptor = cv2.xfeature2d.BRISK_create()
+            descriptor = cv2.xfeatures2d.BRISK_create()
         elif self.method == 'orb':
             descriptor = cv2.ORB_create()
 
-        (key_points, features) = descriptor.detectAndCompute(image, None)
+        key_points, features = descriptor.detectAndCompute(image, None)
 
         return key_points, features
 
@@ -159,7 +161,8 @@ class MultiVideoStitch:
             return None
 
     def twoImageStitch(self, images, ratio=None):
-        image_b, image_a = images
+        image_b = images[0]
+        image_a = images[1]
 
         if self.homo_mat is None:
             # Detect keypoints and extract
@@ -189,17 +192,67 @@ class MultiVideoStitch:
         # Return stitched image
         return result
 
-    def stitch(self):
+    def twoVideoStitch(self, vid_a, vid_b):
+        video_a = cv2.VideoCapture(vid_a)
+        video_b = cv2.VideoCapture(vid_b)
+        print('[INFO]: {} and {} loaded'.format(vid_a.split('/')[-1],
+                                                vid_b.split('/')[-1]))
+
+        n_frames = min(int(video_a.get(cv2.CAP_PROP_FRAME_COUNT)), int(video_b.get(cv2.CAP_PROP_FRAME_COUNT)))
+        fps = int(video_a.get(cv2.CAP_PROP_FRAME_FPS))
+        frames = []
+
+        for i in tqdm.tqdm(np.arange(n_frames)):
+            success, a = video_a.read()
+            i, b = video_b.read()
+
+            if success:
+                # stitch frames together to form a panorama
+                stitched_frame = self.twoImageStitch([b, a])
+
+                stitched_frame = imutils.resize(stitched_frame, width = self.video_out_width)
+                frames.append(stitched_frame)
+
+            if self.display:
+                cv2.imshow('Result', stitched_frame)
+
+            # Press q o break from the loop
+            if cv2.waitkey(1) & 0xFF == ord('q'):
+                break
+
+        cv2.destroyAllWindows()
+        print('[INFO]: Video stitching finished!')
+
+        # save video
+        print('[INFO]: Saving {} in {}'.format(video_a.split('/')[-1],
+                                               os.path.dirname(self.video_out_path)))
+
+        clip = ImageSequenceClip(frames, fps=fps)
+        clip.write_videofile(self.video_out_path, codec='avi', audio=False, progress_bar=True, verbose=False)
+        print('[INFO]: {} saved'.format(video_a.split('/')[-1]))
+        return self.video_out_path + '/' + video_a
+
+    def run(self):
         assert len(self.video_paths) == self.num_of_vid
         if not os.path.isdir(self.video_out_path):
             os.mkdir(self.video_out_path)
 
-        lists = [[] for _ in range(self.num_of_vid)]
-        for i in self.video_paths:
-            lists[i] = MultiVideoStitch.extractFrame(i)
-            # check if all videos have the same number of frames
-            if i >= 1:
-                assert len(lists[i]) == len(lists[i-1])
+        first_vid = self.video_paths[0]
+        for i in self.video_paths[1:]:
+            stitched = self.twoVideoStitch(first_vid, i)
+            first_vid = stitched
+
+
+
+
+
+
+        # lists = [[] for _ in range(self.num_of_vid)]
+        # for i in self.video_paths:
+        #     lists[i] = MultiVideoStitch.extractFrame(i)
+        #     # check if all videos have the same number of frames
+        #     if i >= 1:
+        #         assert len(lists[i]) == len(lists[i-1])
         # iterate through all files in video_paths
         # only generate homography for one set of 4 frames, then use the same homography to stitch
         # remaining frames
