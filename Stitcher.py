@@ -171,10 +171,10 @@ class MultiVideoStitch:
 
             # Match features between the two images
             if self.featureMatching == 'bf':
-                matches = self.matchKeyPointsBF(self, features_a, features_b)
+                matches = self.matchKeyPointsBF(features_a, features_b)
             elif self.featureMatching == 'knn':
                 assert ratio is not None
-                matches = self.matchKeyPointsKNN(self, features_a, features_b, ratio)
+                matches = self.matchKeyPointsKNN(features_a, features_b, ratio)
 
             # If the match is None, then there aren't enough matches keypoints to create a panorama
             if matches is None:
@@ -199,7 +199,7 @@ class MultiVideoStitch:
                                                 vid_b.split('/')[-1]))
 
         n_frames = min(int(video_a.get(cv2.CAP_PROP_FRAME_COUNT)), int(video_b.get(cv2.CAP_PROP_FRAME_COUNT)))
-        fps = int(video_a.get(cv2.CAP_PROP_FRAME_FPS))
+        fps = int(video_a.get(cv2.CAP_PROP_FPS))
         frames = []
 
         for i in tqdm.tqdm(np.arange(n_frames)):

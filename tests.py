@@ -8,7 +8,7 @@ import Stitcher
 
 stitch = Stitcher.MultiVideoStitch('/media/data/Sleap/RRvids/stitchertest', 4,
                                    '/media/data/Sleap/RRvids/stitchertest/stitched', display=True)
-stitch.twoImageStitch('/media/data/Sleap/RRvids/stitchertest/R1_cam_2021-04-30T16_48_39.avi',
+stitch.twoVideoStitch('/media/data/Sleap/RRvids/stitchertest/R1_cam_2021-04-30T16_48_39.avi',
                                          '/media/data/Sleap/RRvids/stitchertest/R2_cam_2021-04-30T16_48_39.avi')
 
 # sl.vid_to_csv('/media/data/Sleap/probswitchVids/BatchTrain',
