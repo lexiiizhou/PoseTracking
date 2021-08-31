@@ -4,10 +4,11 @@ import Stitcher
 
 
 '''
-FolderPaths is a list of folders that contains the videos you want to run. Note that these 
-videos should be of the same type of animal (e.g. mouse) and should have similar lighting and zoom.
-Otherwise the model used won't give accurate predictions. One example would be different mice 
+FolderPaths is a list of folders that contain videos you want to run. Note that these 
+videos should be of the same type of animal (e.g. mouse) and should have similar lighting and camera angle.
+Otherwise the model won't give accurate predictions. One example would be different mice 
 performing the same behavior task. Each folder contains the behavioral recordings of each individual mouse. 
+But all the recordings are done in a similar setting. 
 '''
 folderPaths = ['/media/data/Sleap/probswitchVids/BatchTrain/D1-R35-RT']
 modelPath = '/media/data/Sleap/models/210821_155119.single_instance.n=55'
